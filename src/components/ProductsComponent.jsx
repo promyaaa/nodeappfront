@@ -6,12 +6,20 @@ import ProductHeader from "./ProductHeader";
 
 const ProductsComponent = () => {
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     axios
       .get("https://express-server-xi-one.vercel.app/api/products")
-      .then((res) => setProducts(res.data)) // Success or No Error
-      .catch((err) => console.log(err.message)); // Fail or Error
+      .then((res) => {
+        setProducts(res.data)
+        setIsLoading(false)
+      }) // Success or No Error
+      .catch((err) => {
+        console.log(err.message)
+        setIsLoading(false)
+      }); // Fail or Error
   }, []);
 
   return (
@@ -27,14 +35,15 @@ const ProductsComponent = () => {
             ))}
           </div>
 
-          <div className="w-full text-center">
-            <button
-              type="button"
-              className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-            >
-              Show more
-            </button>
-          </div>
+          { isLoading && 
+            <div className="flex items-center justify-center h-screen">
+              <span className="loading loading-ball loading-xs"></span>
+              <span className="loading loading-ball loading-sm"></span>
+              <span className="loading loading-ball loading-md"></span>
+              <span className="loading loading-ball loading-lg"></span>
+            </div>
+          }
+
         </div>
       </section>
     </div>
