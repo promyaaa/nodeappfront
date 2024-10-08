@@ -44,9 +44,7 @@ export const AuthProvider = ({ children }) => {
     return await signInWithPopup(auth, googleProvider);
   };
 
-  const loginGithub = async () => {
-    return await signInWithPopup(auth, githubProvider);
-  };
+  
 
   const logout = async () => {
     await signOut(auth);
@@ -60,7 +58,6 @@ export const AuthProvider = ({ children }) => {
         updateProfileWithEmail,
         loginWithEmail,
         loginWithGoogle: loginGoogle,
-        loginWithGithub: loginGithub,
         logout,
       }}
     >
