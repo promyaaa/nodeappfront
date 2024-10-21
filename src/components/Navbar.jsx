@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import NavLinks from "./NavLinks";
@@ -9,7 +8,6 @@ const Navbar = () => {
   const handelLogout = async () => {
     try {
       await logout(); // Handle Firebase login
-      toast.success("User logged out");
       // navigate("/"); // Redirect to homepage after successful login
     } catch (error) {
       console.error("Login error:", error);
@@ -45,11 +43,12 @@ const Navbar = () => {
                   <img
                     alt="Tailwind CSS Navbar component"
                     src={
-                      user.photoURL
+                      user.photoURL && user.photoURL !== "nourl"
                         ? user.photoURL
-                        : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                        : "https://placehold.co/200x200?text=P"
                     }
                   />
+
                 </div>
               </div>
               <ul

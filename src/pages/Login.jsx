@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -16,7 +15,6 @@ const Login = () => {
     try {
       await loginWithEmail(email, password); // Handle Firebase login
       navigate(location.state ? location.state : "/"); // Redirect to homepage after successful login
-      toast.success("Login successful!"); // Show success notification
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -27,7 +25,6 @@ const Login = () => {
     try {
       await loginWithGoogle(); // Handle Firebase login
       navigate(location.state ? location.state : "/"); // Redirect to homepage after successful login
-      toast.success("Login with Google successful!"); // Show success notification
     } catch (error) {
       console.error("Login error:", error);
     }

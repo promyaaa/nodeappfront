@@ -9,11 +9,11 @@ const ProductCard = ({
 
   return (
     <div>
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="rounded-lg border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div className="h-56 w-full">
           <Link to={`/products/${_id}`}>
             <img
-              className="mx-auto h-full dark:hidden"
+              className="mx-auto w-full h-full dark:hidden"
               src={img_url}
               alt={title}
             />

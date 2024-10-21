@@ -1,9 +1,12 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const About = () => {
   return (
+    <>
     <div className="max-w-6xl mx-auto">
       <Navbar />
+      <div className="p-10">
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content text-center">
           <div className="max-w-md">
@@ -19,8 +22,11 @@ const About = () => {
           </div>
         </div>
       </div>
+      </div>
 
     </div>
+    <Footer />
+    </>
   );
 };
 
