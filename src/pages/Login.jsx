@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import axios from 'axios';
 
 const Login = () => {
   const { user, loginWithEmail, loginWithGoogle, loginWithGithub } = useAuth(); // Access the user and login function
@@ -11,14 +12,47 @@ const Login = () => {
 
   if (user) return <Navigate to={location.state} />;
 
+  // const handleLoginWithEmail = async ({ email, password }) => {
+  //   try {
+  //     await loginWithEmail(email, password); // Handle Firebase login
+  //     navigate(location.state ? location.state : "/"); // Redirect to homepage after successful login
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //   }
+  // };
+
   const handleLoginWithEmail = async ({ email, password }) => {
     try {
-      await loginWithEmail(email, password); // Handle Firebase login
-      navigate(location.state ? location.state : "/"); // Redirect to homepage after successful login
+      // Firebase login (assuming loginWithEmail is Firebase's signInWithEmailAndPassword method)
+      const userCredential = await loginWithEmail(email, password);
+      const user = userCredential.user;
+
+      // Get the Firebase ID token
+      const token = await user.getIdToken();
+
+      // Send the token to the backend to fetch the user data from MongoDB
+      const response = await axios.post(
+        'http://localhost:4000/api/login',  // Replace with your Express backend login endpoint
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,  // Include the Firebase ID token in headers
+          },
+        }
+      );
+
+      // You can store the response data (user data from MongoDB) as needed
+      const userData = response.data;
+      console.log('User data from backend:', userData);
+
+      // Redirect to the home page after successful login
+      navigate(location.state ? location.state : "/");
+
     } catch (error) {
       console.error("Login error:", error);
     }
   };
+
 
   //   console.log(user);
   const handleLoginWithGoogle = async () => {

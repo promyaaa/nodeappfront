@@ -1,29 +1,75 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import axios from 'axios'; 
 
 const Register = () => {
   const { register, handleSubmit } = useForm();
   const { signUp, updateProfileWithEmail } = useAuth(); // Access the user and login function
   const navigate = useNavigate();
 
-  const handelSignUp = async ({
+  // const handelSignUp = async ({
+  //   name,
+  //   photo,
+  //   email,
+  //   password,
+  // }) => {
+  //   console.log(name, photo, email, password);
+  //   try {
+  //     // Create user with email and password
+  //     const userCredential = await signUp(email, password);
+  //     const user = userCredential.user;
+  //     await updateProfileWithEmail(user, {
+  //       displayName: name,
+  //       photoURL: photo,
+  //     });
+  //     //   console.log("User registered successfully:", user);
+  //     navigate("/");
+  //   } catch (err) {
+  //     console.error("Error registering user:", err);
+  //   }
+  // };
+
+  const handleSignUp = async ({
     name,
     photo,
     email,
     password,
   }) => {
-    console.log(name, photo, email, password);
+    
     try {
-      // Create user with email and password
-      const userCredential = await signUp(email, password);
+      // Create user with email and password using Firebase
+      const userCredential = await signUp(email, password);  // signUp is Firebase's createUserWithEmailAndPassword method
       const user = userCredential.user;
+      
+      // Update the user's profile in Firebase
       await updateProfileWithEmail(user, {
         displayName: name,
         photoURL: photo,
       });
-      //   console.log("User registered successfully:", user);
+
+      // Get Firebase ID token
+      const token = await user.getIdToken();  // Get the Firebase ID token for authentication with backend
+      
+      // Send the user data to the Express backend to register the user in MongoDB
+      await axios.post(
+        'http://localhost:4000/api/register',  // Backend endpoint to register the user
+        {
+          uid: user.uid,     // Send the Firebase UID
+          name,              // Send user's display name
+          email,             // Send user's email
+          photoURL: photo,   // Send user's photo URL
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,  // Include Firebase ID token in headers for backend validation
+          },
+        }
+      );
+
+      // Navigate to home page after successful registration
       navigate("/");
+
     } catch (err) {
       console.error("Error registering user:", err);
     }
@@ -37,7 +83,7 @@ const Register = () => {
             <div className="flex h-full flex-col justify-center gap-4 p-6">
               <div className="left-0 right-0 inline-block border-gray-200 px-2 py-2.5 sm:px-4">
                 <form
-                  onSubmit={handleSubmit(handelSignUp)}
+                  onSubmit={handleSubmit(handleSignUp)}
                   className="flex flex-col gap-4 pb-4"
                 >
                   <h1 className="mb-4 text-2xl font-bold dark:text-white text-center">
